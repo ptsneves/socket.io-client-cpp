@@ -64,7 +64,6 @@ set_target_properties(sioclient_tls
 	)
 endif()
 list(APPEND TARGET_LIBRARIES sioclient_tls)
-
 endif()
 
 set(INSTALL_PKGCONFIG_DIR "${CMAKE_INSTALL_LIBDIR}/pkgconfig" CACHE PATH "Installation directory for pkgconfig (.pc) files")
@@ -73,6 +72,11 @@ configure_file( ${CMAKE_CURRENT_LIST_DIR}/socketio.pc.cmakein
   ${CMAKE_CURRENT_LIST_DIR}/socketio.pc @ONLY)
 
 install(FILES socketio.pc DESTINATION "${INSTALL_PKGCONFIG_DIR}")
+add_executable(sio_console_demo ${CMAKE_CURRENT_LIST_DIR}/examples/Console/main.cpp)
+set_property(TARGET sio_console_demo PROPERTY CXX_STANDARD 11)
+set_property(TARGET sio_console_demo PROPERTY CXX_STANDARD_REQUIRED ON)
+target_link_libraries(sio_console_demo sioclient)
+target_link_libraries(sio_console_demo pthread )
 
 install(FILES ${ALL_HEADERS}
     DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
@@ -80,4 +84,8 @@ install(FILES ${ALL_HEADERS}
 
 install(TARGETS ${TARGET_LIBRARIES}
     DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+)
+
+install(TARGETS sio_console_demo
+    DESTINATION "${CMAKE_INSTALL_BINDIR}"
 )

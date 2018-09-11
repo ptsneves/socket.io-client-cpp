@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.1.0 FATAL_ERROR)
 PROJECT(sioclient)
 
-option(BUILD_SHARED_LIBS "Build the shared library" OFF)
-option(Boost_USE_STATIC_LIBS "Use Boost static version" ON)
+option(BUILD_SHARED_LIBS "Build the shared library" ON)
+option(Boost_USE_STATIC_LIBS "Use Boost static version" OFF)
 
 set(MAJOR 1)
 set(MINOR 6)
@@ -19,7 +19,7 @@ endif()
 set(BOOST_VER "1.55.0" CACHE STRING "boost version" )
 
 set(Boost_USE_MULTITHREADED ON) 
-set(Boost_USE_STATIC_RUNTIME OFF) 
+set(Boost_USE_STATIC_RUNTIME ON)
 find_package(Boost ${BOOST_VER} REQUIRED COMPONENTS system date_time random) 
 
 aux_source_directory(${CMAKE_CURRENT_LIST_DIR}/src ALL_SRC)
@@ -30,8 +30,6 @@ set(SIO_INCLUDEDIR ${CMAKE_CURRENT_LIST_DIR})
 add_library(sioclient ${ALL_SRC})
 target_include_directories(sioclient PRIVATE ${Boost_INCLUDE_DIRS} 
     ${CMAKE_CURRENT_LIST_DIR}/src 
-    ${CMAKE_CURRENT_LIST_DIR}/lib/websocketpp 
-    ${CMAKE_CURRENT_LIST_DIR}/lib/rapidjson/include
 )
 
 set_property(TARGET sioclient PROPERTY CXX_STANDARD 11)
@@ -51,9 +49,6 @@ if(OPENSSL_FOUND)
 add_library(sioclient_tls ${ALL_SRC})
 target_include_directories(sioclient_tls PRIVATE ${Boost_INCLUDE_DIRS} 
     ${CMAKE_CURRENT_LIST_DIR}/src 
-    ${CMAKE_CURRENT_LIST_DIR}/lib/websocketpp 
-    ${CMAKE_CURRENT_LIST_DIR}/lib/rapidjson/include
-    ${OPENSSL_INCLUDE_DIR}
 )
 
 set_property(TARGET sioclient_tls PROPERTY CXX_STANDARD 11)
@@ -71,14 +66,10 @@ list(APPEND TARGET_LIBRARIES sioclient_tls)
 
 endif()
 
-install(FILES ${ALL_HEADERS} 
-    DESTINATION "${CMAKE_CURRENT_LIST_DIR}/build/include"
+install(FILES ${ALL_HEADERS}
+    DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
 )
 
 install(TARGETS ${TARGET_LIBRARIES}
-    DESTINATION "${CMAKE_CURRENT_LIST_DIR}/build/lib/${CMAKE_BUILD_TYPE}"
-)
-
-install(FILES ${Boost_LIBRARIES} 
-    DESTINATION "${CMAKE_CURRENT_LIST_DIR}/build/lib/${CMAKE_BUILD_TYPE}"
+    DESTINATION "${CMAKE_INSTALL_LIBDIR}"
 )

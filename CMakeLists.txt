@@ -4,6 +4,7 @@ PROJECT(sioclient)
 option(BUILD_SHARED_LIBS "Build the shared library" ON)
 option(Boost_USE_STATIC_LIBS "Use Boost static version" OFF)
 
+
 set(MAJOR 1)
 set(MINOR 6)
 set(PATCH 0)

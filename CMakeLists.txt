@@ -78,6 +78,15 @@ set_property(TARGET sio_console_demo PROPERTY CXX_STANDARD_REQUIRED ON)
 target_link_libraries(sio_console_demo sioclient)
 target_link_libraries(sio_console_demo pthread )
 
+if(SERVER_ADDRESS)
+  target_compile_definitions(sio_console_demo PRIVATE SERVER_ADDRESS=${SERVER_ADDRESS})
+endif()
+
+if(NAMESPACE)
+  target_compile_definitions(sio_console_demo PRIVATE NAMESPACE=${NAMESPACE})
+endif()
+
+
 install(FILES ${ALL_HEADERS}
     DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
 )

@@ -26,6 +26,14 @@
 #define MAIN_FUNC int main(int argc ,const char* args[])
 #endif
 
+#ifndef SERVER_ADDRESS
+#define SERVER_ADDRESS "127.0.0.1"
+#endif
+
+#ifndef NAMESPACE
+#define NAMESPACE "/"
+#endif
+
 using namespace sio;
 using namespace std;
 std::mutex _lock;
@@ -111,14 +119,15 @@ MAIN_FUNC
     h.set_open_listener(std::bind(&connection_listener::on_connected, &l));
     h.set_close_listener(std::bind(&connection_listener::on_close, &l,std::placeholders::_1));
     h.set_fail_listener(std::bind(&connection_listener::on_fail, &l));
-    h.connect("http://127.0.0.1:3000");
+    h.connect(SERVER_ADDRESS);
     _lock.lock();
     if(!connect_finish)
     {
         _cond.wait(_lock);
     }
     _lock.unlock();
-	current_socket = h.socket();
+	current_socket = h.socket("drotag");
+  	current_socket = h.socket(NAMESPACE);
 Login:
     string nickname;
     while (nickname.length() == 0) {

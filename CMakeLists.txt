@@ -7,6 +7,7 @@ option(Boost_USE_STATIC_LIBS "Use Boost static version" OFF)
 set(MAJOR 1)
 set(MINOR 6)
 set(PATCH 0)
+set(VERSION ${MAJOR}.${MINOR}.${PATCH})
 
 if(NOT CMAKE_BUILD_TYPE )
 MESSAGE(STATUS "not define build type, set to release" )
@@ -39,7 +40,7 @@ if(BUILD_SHARED_LIBS)
 set_target_properties(sioclient
 	PROPERTIES
 		SOVERSION ${MAJOR}
-		VERSION ${MAJOR}.${MINOR}.${PATCH}
+		VERSION ${VERSION}
 	)
 endif()
 list(APPEND TARGET_LIBRARIES sioclient)
@@ -65,6 +66,13 @@ endif()
 list(APPEND TARGET_LIBRARIES sioclient_tls)
 
 endif()
+
+set(INSTALL_PKGCONFIG_DIR "${CMAKE_INSTALL_LIBDIR}/pkgconfig" CACHE PATH "Installation directory for pkgconfig (.pc) files")
+
+configure_file( ${CMAKE_CURRENT_LIST_DIR}/socketio.pc.cmakein
+  ${CMAKE_CURRENT_LIST_DIR}/socketio.pc @ONLY)
+
+install(FILES socketio.pc DESTINATION "${INSTALL_PKGCONFIG_DIR}")
 
 install(FILES ${ALL_HEADERS}
     DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"

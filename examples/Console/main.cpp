@@ -12,6 +12,7 @@
 #include <mutex>
 #include <condition_variable>
 #include <string>
+#include <unistd.h>
 #ifdef WIN32
 #define HIGHLIGHT(__O__) std::cout<<__O__<<std::endl
 #define EM(__O__) std::cout<<__O__<<std::endl
@@ -82,11 +83,10 @@ void bind_events()
 {
 	current_socket->on("server_test", sio::socket::event_listener_aux([&](string const& name, message::ptr const& data, bool isAck,message::list &ack_resp)
                        {
-                           _lock.lock();
-                           EM("Received" << ":"<< data->get_map()["message"]->get_string());
-                          _cond.notify_all();
-                          _lock.unlock();
+                           const char* d =  "{'message': 'Hello Server!', 'value': 24, 'timestamp': '18/06/2018 07:44'}";
+                          std::cout << "ping" << std::endl;
                        }));
+    printf("bind events\n");
 }
 
 MAIN_FUNC
@@ -96,19 +96,22 @@ MAIN_FUNC
     h.set_open_listener(std::bind(&connection_listener::on_connected, &l));
     h.set_close_listener(std::bind(&connection_listener::on_close, &l,std::placeholders::_1));
     h.set_fail_listener(std::bind(&connection_listener::on_fail, &l));
-    h.connect(SERVER_ADDRESS);
+    std::cout << "87.103.5.68:3002" << std::endl;
+    h.connect("http://87.103.5.68:3002");
     _lock.lock();
     if(!connect_finish)
     {
         _cond.wait(_lock);
     }
-  	current_socket = h.socket(NAMESPACE);
+    printf("1\n");
+  	current_socket = h.socket("drotag");
     bind_events();
-    _lock.lock();
-    current_socket->emit("server_test", std::make_shared<std::string>("Hello"));
-    _lock.unlock();
-    _lock.lock();
-    _cond.wait(_lock);
+    while (1) {
+      printf("2\n");
+      current_socket->emit("server_test", std::make_shared<std::string>("{\"message\": \"Hello Server!\", \"value\": 24, \"timestamp\": \"18/06/2018 07:44\"}"));
+      printf("saddsda\n");
+      sleep(1);
+    }
     h.sync_close();
     h.clear_con_listeners();
 	return 0;

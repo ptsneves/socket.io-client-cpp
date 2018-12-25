@@ -6,5 +6,5 @@ Name: socketio
 Description: C++ socket.io library
 Version: @VERSION@
 Requires: openssl
-Libs: -L${libdir} -lssl -lsioclient_tls
+Libs: -L${libdir} -lsioclient
 Cflags: -I${includedir}
